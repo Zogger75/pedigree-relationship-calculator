@@ -1,3 +1,24 @@
+```text
+# Example pedigree input file for pedigree_relationship_calculator.py
+#
+# File format:
+# gid|name|dam|sire|method_code|include
+#
+# Columns:
+# gid         = unique numeric germplasm identifier
+# name        = line, variety, parent, or cross name
+# dam         = female parent / first parent GID; use 0 if unknown
+# sire        = male parent / second parent GID; use 0 if unknown
+# method_code = FND, GEN, DER, SEL, or MAN
+# include     = Y to include in the COP matrix; N for ancestors only
+#
+# Method codes:
+# FND = founder / no known parents
+# GEN = generative cross using dam and sire
+# DER = derived or selected line
+# SEL = selection; treated similarly to DER
+# MAN = management/release/increase step; treated as no genetic change
+#
 gid|name|dam|sire|method_code|include
 F001|Founder Alpha|0|0|FND|no
 F002|Founder Bravo|0|0|FND|no
