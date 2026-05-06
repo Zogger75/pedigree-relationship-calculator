@@ -1,0 +1,12 @@
+gid|name|dam|sire|method_code|include
+F001|Founder Alpha|0|0|FND|no
+F002|Founder Bravo|0|0|FND|no
+F003|Founder Cedar|0|0|FND|no
+F004|Founder Delta|0|0|FND|no
+C001|Alpha x Bravo|F001|F002|GEN|no
+C002|Cedar x Delta|F003|F004|GEN|no
+L001|Line One|C001|C002|GEN|yes
+L002|Line Two|C001|F003|GEN|yes
+L003|Line Three Selection|L001|0|DER|yes
+L004|Line Four Increase|L003|0|MAN|yes
+L005|Line Five|L002|L003|GEN|yes
