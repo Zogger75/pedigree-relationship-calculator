@@ -114,7 +114,7 @@ def read_pedigree_file(input_path: Path, delimiter: str = "|") -> Dict[str, Germ
 
     required_columns = {"gid", "name", "dam", "sire", "method_code"}
     records: Dict[str, GermplasmRecord] = {}
-
+    input_path = Path(input_path)
     with input_path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle, delimiter=delimiter)
         if reader.fieldnames is None:
@@ -148,7 +148,42 @@ def read_pedigree_file(input_path: Path, delimiter: str = "|") -> Dict[str, Germ
     validate_parent_references(records)
     return records
 
+def choose_pedigree_file() -> str:
+    """
+    Open a file picker so the user can select the pedigree input file.
 
+    Returns:
+        str: Full path to the selected pedigree file.
+
+    Raises:
+        SystemExit: If the user cancels the file picker.
+    """
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+    except ImportError as exc:
+        raise SystemExit(
+            "Tkinter is not available. Please provide the pedigree file path manually."
+        ) from exc
+
+    root = tk.Tk()
+    root.withdraw()
+
+    file_path = filedialog.askopenfilename(
+        title="Select pedigree input file",
+        filetypes=[
+            ("Text files", "*.txt"),
+            ("CSV files", "*.csv"),
+            ("All files", "*.*"),
+        ],
+    )
+
+    root.destroy()
+
+    if not file_path:
+        raise SystemExit("No pedigree file selected. Analysis cancelled.")
+
+    return file_path
 def validate_parent_references(records: Dict[str, GermplasmRecord]) -> None:
     """Ensure every non-blank parent points to another row in the file."""
 
@@ -373,7 +408,7 @@ def build_relationship_matrix(gids: Iterable[str], records: Dict[str, GermplasmR
 
 def write_matrix_csv(matrix: List[List[str]], output_path: Path) -> None:
     """Write the relationship matrix to a CSV file."""
-
+    output_path = Path(output_path)
     with output_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerows(matrix)
@@ -405,7 +440,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Calculate a generic coefficient of parentage / pedigree relationship matrix from a text file."
     )
-    parser.add_argument("pedigree_file", type=Path, help="Path to the pipe-delimited pedigree .txt file.")
+    parser.add_argument(
+    "pedigree_file",
+    nargs="?",
+    help="Path to the pedigree input text file. If omitted, a file picker will open."
+    )   
     parser.add_argument("--output", type=Path, default=Path("cop_matrix.csv"), help="Output CSV path.")
     parser.add_argument("--delimiter", default="|", help="Input delimiter. Default: '|'.")
     parser.add_argument("--debug-pair", nargs=2, metavar=("GID_A", "GID_B"), help="Print details for one pair.")
@@ -416,6 +455,8 @@ def main() -> None:
     """Command-line entry point."""
 
     args = parse_args()
+    if not args.pedigree_file:
+        args.pedigree_file = choose_pedigree_file()
     records = read_pedigree_file(args.pedigree_file, delimiter=args.delimiter)
     gids = included_gids(records)
 
