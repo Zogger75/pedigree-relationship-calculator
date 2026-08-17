@@ -1,6 +1,9 @@
 Pedigree Relationship Calculator
 
 This project demonstrates recursive pedigree traversal, coefficient of parentage calculation, relationship matrix generation, and exportable reporting for plant breeding datasets.
+
+COP calculations are based on the methodology described by Graham McLaren, Ian DeLacy, and Jose Crossa in Routine Computation and Visualization of Coefficients of Parentage Using the International Crop Information System (ICIS).
+
 ## Input Pedigree File Format
 
 The tool reads a pipe-delimited text file with one germplasm record per row.
